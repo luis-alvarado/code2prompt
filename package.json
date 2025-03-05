@@ -9,15 +9,64 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:code2prompt.generatePrompt"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "code2prompt.helloWorld",
-        "title": "Hello World"
+        "command": "code2prompt.generatePrompt",
+        "title": "Code2Prompt: Generate Prompt"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceScheme == file",
+          "command": "code2prompt.generatePrompt",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Code2Prompt",
+      "properties": {
+        "code2prompt.filePatterns": {
+          "type": "array",
+          "default": ["**/*.{ts,js,py,md,txt,cpp,h,java}"],
+          "description": "Glob patterns for files to include in prompts."
+        },
+        "code2prompt.excludePatterns": {
+          "type": "array",
+          "default": [],
+          "description": "Glob patterns for files to exclude from prompts, in addition to .gitignore and default excludes."
+        },
+        "code2prompt.templates": {
+          "type": "array",
+          "default": [
+            { "name": "Default", "template": "{metadata}\n\n{content}" },
+            { "name": "Bug Check", "template": "Please analyze this code for potential bugs:\n{metadata}\n\n{content}" },
+            { "name": "Summary", "template": "Provide a summary of this codebase:\n{metadata}\n\n{content}" }
+          ],
+          "description": "Custom templates for prompt generation. Use {metadata} and {content} as placeholders.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the template, shown in the selection UI."
+              },
+              "template": {
+                "type": "string",
+                "description": "Template string with {metadata} and {content} placeholders."
+              }
+            },
+            "required": ["name", "template"]
+          }
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -34,16 +83,17 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.97.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/vscode": "^1.97.0",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
-    "eslint": "^9.21.0",
-    "esbuild": "^0.25.0",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.7.3",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.21.0",
+    "ignore": "^7.0.3",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.7.3"
   }
 }
