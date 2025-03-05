@@ -4,7 +4,7 @@ import * as path from 'path';
 import ignore from 'ignore'; // Dependency for parsing .gitignore
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Code2Prompt extension activated');
+  //console.log('Code2Prompt extension activated');
   // Register the command to generate a prompt from selected files or workspace
   const disposable = vscode.commands.registerCommand('code2prompt.generatePrompt', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
     let selectedUris: vscode.Uri[] = [];
