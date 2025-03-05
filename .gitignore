@@ -1,0 +1,21 @@
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+
+
+# Ignore build output
+out/
+dist/
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore TypeScript build artifacts
+*.tsbuildinfo
+
+# Ignore logs & OS-specific files
+npm-debug.log*
+yarn-debug.log*
+.DS_Store
