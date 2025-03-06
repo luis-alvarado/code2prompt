@@ -3,13 +3,18 @@ const esbuild = require('esbuild');
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
+const tsconfig = production ? 'tsconfig.prod.json' : 'tsconfig.dev.json';
+
 const commonOptions = {
   bundle: true,
   format: 'cjs',
   platform: 'node',
   sourcemap: !production,
   minify: production,
-  external: ['vscode'] // Exclude vscode from both builds
+  treeShaking: true,
+  external: ['vscode'], // Exclude vscode from both builds
+  define: production ? { 'process.env.NODE_ENV': '"production"' } : {}, // Optimize conditional checks
+  tsconfig: tsconfig  
 };
 
 esbuild.build({

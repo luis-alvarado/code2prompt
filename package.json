@@ -2,13 +2,16 @@
   "name": "code2prompt",
   "displayName": "code2prompt",
   "description": "Generate structured prompts from your workspace for AI-assisted development.",
+  "repository":{
+    "type": "git",
+    "url": "https://github.com/luis-alvarado/code2prompt.git"
+  },
   "version": "0.0.1",
+  "publisher": "luisalvarado",
   "engines": {
     "vscode": "^1.97.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other", "AI", "Programming Languages"],
   "activationEvents": [
     "onCommand:code2prompt.generatePrompt"
   ],

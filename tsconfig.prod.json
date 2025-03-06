@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "declaration": false,
+    "removeComments": true,
+    "stripInternal": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
+}
