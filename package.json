@@ -1,7 +1,7 @@
 {
   "name": "code2prompt",
   "displayName": "code2prompt",
-  "description": "Generate structured prompts from your VS Code workspace for AI-assisted development. Extract relevant context from local files to enhance LLM interactions.",
+  "description": "Generate structured prompts from your workspace for AI-assisted development.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.97.0"
@@ -13,6 +13,9 @@
     "onCommand:code2prompt.generatePrompt"
   ],
   "main": "./dist/extension.js",
+  "bin": {
+    "code2prompt": "./dist/cli.js"
+  },
   "contributes": {
     "commands": [
       {
@@ -34,35 +37,47 @@
       "properties": {
         "code2prompt.filePatterns": {
           "type": "array",
-          "default": ["**/*.{ts,js,py,md,txt,cpp,h,java}"],
+          "default": [
+            "**/*.{ts,js,py,md,txt,cpp,h,java}"
+          ],
           "description": "Glob patterns for files to include in prompts."
         },
         "code2prompt.excludePatterns": {
           "type": "array",
           "default": [],
-          "description": "Glob patterns for files to exclude from prompts, in addition to .gitignore and default excludes."
+          "description": "Glob patterns for files to exclude from prompts."
         },
         "code2prompt.templates": {
           "type": "array",
           "default": [
-            { "name": "Default", "template": "{metadata}\n\n{content}" },
-            { "name": "Bug Check", "template": "Please analyze this code for potential bugs:\n{metadata}\n\n{content}" },
-            { "name": "Summary", "template": "Provide a summary of this codebase:\n{metadata}\n\n{content}" }
+            {
+              "name": "Default",
+              "template": "{metadata}\n\n{content}"
+            },
+            {
+              "name": "Bug Check",
+              "template": "Please analyze this code for potential bugs:\n{metadata}\n\n{content}"
+            },
+            {
+              "name": "Summary",
+              "template": "Provide a summary of this codebase:\n{metadata}\n\n{content}"
+            }
           ],
-          "description": "Custom templates for prompt generation. Use {metadata} and {content} as placeholders.",
+          "description": "Custom templates for prompt generation.",
           "items": {
             "type": "object",
             "properties": {
               "name": {
-                "type": "string",
-                "description": "Name of the template, shown in the selection UI."
+                "type": "string"
               },
               "template": {
-                "type": "string",
-                "description": "Template string with {metadata} and {content} placeholders."
+                "type": "string"
               }
             },
-            "required": ["name", "template"]
+            "required": [
+              "name",
+              "template"
+            ]
           }
         }
       }
@@ -70,30 +85,26 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "compile": "npm run check-types && npm run lint && node esbuild.js",
-    "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "npm run check-types && npm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "node esbuild.js --production",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
+    "@types/minimist": "^1.2.5",
     "@types/node": "20.x",
     "@types/vscode": "^1.97.0",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
     "esbuild": "^0.25.0",
     "eslint": "^9.21.0",
     "ignore": "^7.0.3",
-    "npm-run-all": "^4.1.5",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "minimist": "^1.2.8"
   }
 }

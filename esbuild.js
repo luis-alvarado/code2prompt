@@ -1,56 +1,38 @@
-const esbuild = require("esbuild");
+const esbuild = require('esbuild');
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
-/**
- * @type {import('esbuild').Plugin}
- */
-const esbuildProblemMatcherPlugin = {
-	name: 'esbuild-problem-matcher',
-
-	setup(build) {
-		build.onStart(() => {
-			console.log('[watch] build started');
-		});
-		build.onEnd((result) => {
-			result.errors.forEach(({ text, location }) => {
-				console.error(`✘ [ERROR] ${text}`);
-				console.error(`    ${location.file}:${location.line}:${location.column}:`);
-			});
-			console.log('[watch] build finished');
-		});
-	},
+const commonOptions = {
+  bundle: true,
+  format: 'cjs',
+  platform: 'node',
+  sourcemap: !production,
+  minify: production,
+  external: ['vscode'] // Exclude vscode from both builds
 };
 
-async function main() {
-	const ctx = await esbuild.context({
-		entryPoints: [
-			'src/extension.ts'
-		],
-		bundle: true,
-		format: 'cjs',
-		minify: production,
-		sourcemap: !production,
-		sourcesContent: false,
-		platform: 'node',
-		outfile: 'dist/extension.js',
-		external: ['vscode'],
-		logLevel: 'silent',
-		plugins: [
-			/* add to the end of plugins array */
-			esbuildProblemMatcherPlugin,
-		],
-	});
-	if (watch) {
-		await ctx.watch();
-	} else {
-		await ctx.rebuild();
-		await ctx.dispose();
-	}
-}
+esbuild.build({
+  ...commonOptions,
+  entryPoints: ['src/extension/extension.ts'],
+  outfile: 'dist/extension.js'
+}).catch(() => process.exit(1));
 
-main().catch(e => {
-	console.error(e);
-	process.exit(1);
-});
+esbuild.build({
+  ...commonOptions,
+  entryPoints: ['src/cli/cli.ts'],
+  outfile: 'dist/cli.js'
+}).catch(() => process.exit(1));
+
+if (watch) {
+  esbuild.context({
+    ...commonOptions,
+    entryPoints: ['src/extension/extension.ts'],
+    outfile: 'dist/extension.js'
+  }).then(ctx => ctx.watch());
+  esbuild.context({
+    ...commonOptions,
+    entryPoints: ['src/cli/cli.ts'],
+    outfile: 'dist/cli.js'
+  }).then(ctx => ctx.watch());
+}
